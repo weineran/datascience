@@ -2,6 +2,7 @@ from os import listdir, chdir
 from os.path import isfile, join, getsize
 import csv
 import datetime
+import requests		# for downloading (e.g. GET requests)
 
 class Topology_Data:
 	'''
@@ -27,9 +28,29 @@ class Topology_Data:
     # @param url_prefix - the URL the files will be downloaded from
     # @param start_date - the earliest data to download
     # @param end_date - the latest data to download
-	def download_data_files(list_file_path, url_prefix, start_date, end_date):
-		x = 1
+	def download_data_files(self, list_file_path, url_prefix, start_date, end_date):
+		list_file = open(list_file_path, 'r')
+		file_reader = csv.reader(list_file, delimiter='\t')
 
+		for this_line in file_reader:
+			data_file_name = this_line[1]
+			file_date = self.get_file_date(data_file_name)
+
+			if file_date >= start_date and file_date <= end_date:
+				filename = self.data_path + "/" + data_file_name
+				full_url = url_prefix + data_file_name
+				r = requests.get(full_url)
+
+				with open(filename, 'wb') as fd:
+					for chunk in r.iter_content(chunk_size = 1024*512):
+						fd.write(chunk)
+		
+
+	# unzip_data_files
+	# @param start_date - the earliest data to unzip
+    # @param end_date - the latest data to unzip
+	def unzip_data_files(self, start_date, end_date):
+		x = 1
 
 	# transform_data
 	# Transforms the data files to CSV files
@@ -49,7 +70,7 @@ class Topology_Data:
 		# 	We need to parse these text files, extract the data and place them into CSV files that match our data schema
 		'''
 
-		list_of_dirs = listdir(self.data_path)
+		list_of_files = listdir(self.data_path)
 		uid_map = {}
 
 		# Create the CSV files and objects to receive the data
@@ -81,25 +102,16 @@ class Topology_Data:
 		asli_monitor_jct_csv.close()								# close file
 		uid_map['aslim_ID'] = 0												# initialize unique ID
 
-		for this_dir in list_of_dirs:
-			list_of_files = listdir(self.data_path + "/" + this_dir)	# there should be one file per directory (so 1 elem in this list)
-			data_file = list_of_files[0]
-			this_AS_file_path = self.data_path + "/" + this_dir + "/" + data_file
+		for data_file in list_of_files:
+			this_AS_file_path = self.data_path + "/" + data_file
 
 			# ipv4 filenames are 43 chars long; ipv6 filenames are 50 chars long
 			if len(data_file) < 46:
 				ip_version = "IPv4"
-				file_year = int(data_file[28:32])
-				file_month = int(data_file[32:34])
-				file_day = int(data_file[34:36])
 			else:
 				ip_version = "IPv6"
-				file_year = int(data_file[17:21])
-				file_month = int(data_file[21:23])
-				file_day = int(data_file[23:25])
-				print(file_date)
 
-			file_date = datetime.date(file_year, file_month, file_day)
+			file_date = self.get_file_date(data_file)
 			print(file_date)
 			#inner_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks/cycle-aslinks.l7.t1.c000027.20070913.txt"
 			#this_AS_file_path = inner_path + "/" + listdir(inner_path)[0]
@@ -253,6 +265,24 @@ class Topology_Data:
 			autonomous_systems_csv.write(k + '\n')
 		autonomous_systems_csv.close()
 
+	# get_file_date
+	# @param data_file - the filename of a topology data file
+	# Parses the filename to extract the date
+	def get_file_date(self, data_file):
+		# ipv4 filenames are 43 chars long; ipv6 filenames are 50 chars long
+		if len(data_file) < 46:
+			# ip_version = "IPv4"
+			file_year = int(data_file[28:32])
+			file_month = int(data_file[32:34])
+			file_day = int(data_file[34:36])
+		else:
+			# ip_version = "IPv6"
+			file_year = int(data_file[17:21])
+			file_month = int(data_file[21:23])
+			file_day = int(data_file[23:25])
+		file_date = datetime.date(file_year, file_month, file_day)
+		return file_date
+
 ######## End of Topology_Data class #####################
 
 
@@ -278,15 +308,26 @@ def clean_AS(as_num):
 		return as_num[:idx_comma]
 
 
+
+
 ####################
 ### Begin Script ###
 ####################
-data_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/test_aslinks"
-csv_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks"
+data_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks_gz_files/extracted_files"
+csv_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks_CSVs"
+list_file_path_ipv4 = "C:/Users/Andrew/OneDrive/Documents/Northwestern/Courses/495-Data-Science/Final Project/ipv4_file_list.txt"
+list_file_path_ipv6 = "C:/Users/Andrew/OneDrive/Documents/Northwestern/Courses/495-Data-Science/Final Project/ipv6_file_list.txt"
 
+# instantiate an object
 td = Topology_Data(data_path, csv_path)
 
-trans_start_date = datetime.date(2015, 1, 1)
-trans_end_date = datetime.date(2015, 1, 15)
+# download data
+download_start_date = datetime.date(2014, 2, 1)
+download_end_date = datetime.date(2014, 2, 5)
+url_prefix_ipv6 = "http://data.caida.org/datasets/topology/ark/ipv6/as-links.requests/andrewweiner2020@u.northwestern.edu/"
+#td.download_data_files(list_file_path_ipv6, url_prefix_ipv6, download_start_date, download_end_date)
 
+# transform data
+trans_start_date = datetime.date(2014, 2, 2)
+trans_end_date = datetime.date(2014, 2, 4)
 td.transform_data(trans_start_date, trans_end_date)
