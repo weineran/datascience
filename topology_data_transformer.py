@@ -11,9 +11,11 @@ class Topology_Data:
 	'''
 
 	# Constructor
+	# @param download_path - the local directory to download gz files to
 	# @param data_path - the local directory containing the raw data files
 	# @param csv_path - the local directory where the CSV files will be generated
-	def __init__(self, data_path, csv_path):
+	def __init__(self, download_path, data_path, csv_path):
+		self.download_path = download_path
 		self.data_path = data_path
 		self.csv_path = csv_path
 
@@ -37,7 +39,7 @@ class Topology_Data:
 			file_date = self.get_file_date(data_file_name)
 
 			if file_date >= start_date and file_date <= end_date:
-				filename = self.data_path + "/" + data_file_name
+				filename = self.download_path + "/" + data_file_name
 				full_url = url_prefix + data_file_name
 				r = requests.get(full_url)
 
@@ -112,7 +114,7 @@ class Topology_Data:
 				ip_version = "IPv6"
 
 			file_date = self.get_file_date(data_file)
-			print(file_date)
+			#print(file_date)
 			#inner_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks/cycle-aslinks.l7.t1.c000027.20070913.txt"
 			#this_AS_file_path = inner_path + "/" + listdir(inner_path)[0]
 			if file_date >= start_date and file_date <= end_date:
@@ -129,7 +131,7 @@ class Topology_Data:
 	# @ip_version - "IPv4" or "IPv6"
 	# @side-effects - appends data to CSV files
 	def transform_file(self, file_path, uid_map, ip_version):
-		print("Transforming " + file_path)
+		#print("Transforming " + file_path)
 		this_AS_file = open(file_path, 'r')
 		file_reader = csv.reader(this_AS_file, delimiter='\t')
 
@@ -313,21 +315,22 @@ def clean_AS(as_num):
 ####################
 ### Begin Script ###
 ####################
+download_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks_gz_files"
 data_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks_gz_files/extracted_files"
 csv_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks_CSVs"
 list_file_path_ipv4 = "C:/Users/Andrew/OneDrive/Documents/Northwestern/Courses/495-Data-Science/Final Project/ipv4_file_list.txt"
 list_file_path_ipv6 = "C:/Users/Andrew/OneDrive/Documents/Northwestern/Courses/495-Data-Science/Final Project/ipv6_file_list.txt"
 
 # instantiate an object
-td = Topology_Data(data_path, csv_path)
+td = Topology_Data(download_path, data_path, csv_path)
 
 # download data
-download_start_date = datetime.date(2014, 2, 1)
-download_end_date = datetime.date(2014, 2, 5)
+download_start_date = datetime.date(2014, 2, 6)
+download_end_date = datetime.date(2014, 2, 7)
 url_prefix_ipv6 = "http://data.caida.org/datasets/topology/ark/ipv6/as-links.requests/andrewweiner2020@u.northwestern.edu/"
 #td.download_data_files(list_file_path_ipv6, url_prefix_ipv6, download_start_date, download_end_date)
 
 # transform data
-trans_start_date = datetime.date(2014, 2, 2)
-trans_end_date = datetime.date(2014, 2, 4)
+trans_start_date = datetime.date(2014, 1, 1)
+trans_end_date = datetime.date(2014, 2, 7)
 td.transform_data(trans_start_date, trans_end_date)
