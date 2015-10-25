@@ -114,11 +114,20 @@ class Topology_Data:
 				ip_version = "IPv6"
 
 			file_date = self.get_file_date(data_file)
-			#print(file_date)
-			#inner_path = "C:/Users/Andrew/Documents/495 Data Science-Data/Data/aslinks/cycle-aslinks.l7.t1.c000027.20070913.txt"
-			#this_AS_file_path = inner_path + "/" + listdir(inner_path)[0]
+			
 			if file_date >= start_date and file_date <= end_date:
 				td.transform_file(this_AS_file_path, uid_map, ip_version)
+
+		# Put monitors_data and ases_data into csv files
+		monitors_csv = open("monitors.csv", 'w')		# open monitors.csv file
+		for k in self.monitors_data.keys():
+			monitors_csv.write(k + ',' + self.monitors_data[k][0] + ',' + self.monitors_data[k][1] + '\n')
+		monitors_csv.close()
+
+		autonomous_systems_csv = open("autonomous_systems.csv", 'w')
+		for k in self.ases_data.keys():
+			autonomous_systems_csv.write(k + '\n')
+		autonomous_systems_csv.close()
 		
 
 		
@@ -256,16 +265,8 @@ class Topology_Data:
 		as_links_indirect_csv.close()
 		asli_monitor_jct_csv.close()
 
-		# Put monitors_data and ases_data into csv files
-		monitors_csv = open("monitors.csv", 'w')		# open monitors.csv file
-		for k in self.monitors_data.keys():
-			monitors_csv.write(k + ',' + self.monitors_data[k][0] + ',' + self.monitors_data[k][1] + '\n')
-		monitors_csv.close()
+		###### End of transform_file function ###############
 
-		autonomous_systems_csv = open("autonomous_systems.csv", 'w')
-		for k in self.ases_data.keys():
-			autonomous_systems_csv.write(k + '\n')
-		autonomous_systems_csv.close()
 
 	# get_file_date
 	# @param data_file - the filename of a topology data file
@@ -325,12 +326,13 @@ list_file_path_ipv6 = "C:/Users/Andrew/OneDrive/Documents/Northwestern/Courses/4
 td = Topology_Data(download_path, data_path, csv_path)
 
 # download data
-download_start_date = datetime.date(2014, 2, 6)
-download_end_date = datetime.date(2014, 2, 7)
+download_start_date = datetime.date(2014, 1, 1)
+download_end_date = datetime.date(2014, 12, 31)
+url_prefix_ipv4 = "http://data.caida.org/datasets/topology/ark/ipv4/as-links.requests/andrewweiner2020@u.northwestern.edu/team-1/"
 url_prefix_ipv6 = "http://data.caida.org/datasets/topology/ark/ipv6/as-links.requests/andrewweiner2020@u.northwestern.edu/"
-#td.download_data_files(list_file_path_ipv6, url_prefix_ipv6, download_start_date, download_end_date)
+#td.download_data_files(list_file_path_ipv4, url_prefix_ipv4, download_start_date, download_end_date)
 
 # transform data
 trans_start_date = datetime.date(2014, 1, 1)
-trans_end_date = datetime.date(2014, 2, 7)
+trans_end_date = datetime.date(2014, 12, 31)
 td.transform_data(trans_start_date, trans_end_date)
