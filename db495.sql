@@ -60,7 +60,7 @@ ALTER TABLE as_link_indirect_monitor_junction OWNER TO postgres;
 --
 
 CREATE TABLE as_links_direct (
-    asld_uid text,
+    asld_uid integer,
     ip_version text,
     time_period integer,
     timestamp_earliest integer,
@@ -77,7 +77,7 @@ ALTER TABLE as_links_direct OWNER TO postgres;
 --
 
 CREATE TABLE as_links_indirect (
-    asli_uid text,
+    asli_uid integer,
     ip_version text,
     time_period integer,
     timestamp_earliest integer,
