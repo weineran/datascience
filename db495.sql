@@ -34,7 +34,7 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE as_link_direct_monitor_junction (
-    asldm_uid integer,
+    asldm_uid integer PRIMARY KEY,
     asld integer,
     monitor_ip text
 );
@@ -47,7 +47,7 @@ ALTER TABLE as_link_direct_monitor_junction OWNER TO postgres;
 --
 
 CREATE TABLE as_link_indirect_monitor_junction (
-    aslim_uid integer,
+    aslim_uid integer PRIMARY KEY,
     asli integer,
     monitor text
 );
@@ -60,7 +60,7 @@ ALTER TABLE as_link_indirect_monitor_junction OWNER TO postgres;
 --
 
 CREATE TABLE as_links_direct (
-    asld_uid integer,
+    asld_uid integer PRIMARY KEY,
     ip_version text,
     time_period integer,
     timestamp_earliest integer,
@@ -77,7 +77,7 @@ ALTER TABLE as_links_direct OWNER TO postgres;
 --
 
 CREATE TABLE as_links_indirect (
-    asli_uid integer,
+    asli_uid integer PRIMARY KEY,
     ip_version text,
     time_period integer,
     timestamp_earliest integer,
@@ -95,7 +95,7 @@ ALTER TABLE as_links_indirect OWNER TO postgres;
 --
 
 CREATE TABLE autonomous_systems (
-    as_number text
+    as_number text UNIQUE
 );
 
 
@@ -106,7 +106,7 @@ ALTER TABLE autonomous_systems OWNER TO postgres;
 --
 
 CREATE TABLE monitor_time_period_junction (
-    mtp_uid integer,
+    mtp_uid integer PRIMARY KEY,
     monitor text,
     time_period integer,
     monitor_key integer
@@ -120,7 +120,7 @@ ALTER TABLE monitor_time_period_junction OWNER TO postgres;
 --
 
 CREATE TABLE monitors (
-    monitor_ip text,
+    monitor_ip text UNIQUE,
     ip_version text,
     autonomous_system text
 );
@@ -133,7 +133,7 @@ ALTER TABLE monitors OWNER TO postgres;
 --
 
 CREATE TABLE time_periods (
-    timeperiod_uid integer,
+    timeperiod_uid integer PRIMARY KEY,
     timestamp_earliest integer,
     timestamp_latest integer
 );
