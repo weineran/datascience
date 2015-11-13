@@ -44,12 +44,21 @@ def getASdegree(asdata):
 			if as1 not in datav4:
 				datav4[as1] = set()
 			datav4[as1].add(as2)
+			if not datav4.has_key(as2):
+				datav4[as2] = set()
+			datav4[as2].add(as1)
 		else:
 			if as1 not in datav6:
 				datav6[as1] = set()
 			datav6[as1].add(as2)
+			if not datav6.has_key(as2):
+				datav6[as2] = set()
+			datav6[as2].add(as1)
 	dataIPv4only = []
 	dataIPv4v6 = []
+
+	print set(datav4.keys())
+	print set(datav6.keys())
 	for (k,v) in datav4.items():
 		links = list(v)
 		if k in datav6.keys():
