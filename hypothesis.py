@@ -41,16 +41,16 @@ def getASdegree(asdata):
 		as2 = toas if fromas < toas else fromas
 		ipversion = d['ipversion']
 		if ipversion == 'IPv4':
-			if not datav4.has_key(as1):
+			if as1 not in datav4:
 				datav4[as1] = set()
 			datav4[as1].add(as2)
 		else:
-			if not datav6.has_key(as1):
+			if as1 not in datav6:
 				datav6[as1] = set()
 			datav6[as1].add(as2)
 	dataIPv4only = []
 	dataIPv4v6 = []
-	for (k,v) in datav4.iteritems():
+	for (k,v) in datav4.items():
 		links = list(v)
 		if k in datav6.keys():
 			links.extend(list(datav6[k]))
@@ -74,11 +74,11 @@ def getweeklynewASlinks(asdata):
 		week = d['week']
 		weeks.add(week)
 		if ipversion == 'IPv4':
-			if not datav4.has_key(week):
+			if week not in datav4:
 				datav4[week] = set()
 			datav4[week].add(str((as1,as2)))
 		else:
-			if not datav6.has_key(week):
+			if week not in datav6:
 				datav6[week] = set()
 			datav6[week].add(str((as1,as2)))
 	newIPv4 = []
@@ -102,12 +102,12 @@ def getweeklynewASlinks(asdata):
 
 asdata = getdatadict(filename)
 ASv4degree, ASv4v6degree = getASdegree(asdata)
-print '\nASV4only degree', ASv4degree
-print '\nASv4v6 degree', ASv4v6degree
+print ('\nASV4only degree', ASv4degree)
+print ('\nASv4v6 degree', ASv4v6degree)
 
 newv4links, newv6links = getweeklynewASlinks(asdata)
-print '\nweekly newv4links', newv4links
-print '\nweekly newv6links', newv6links
+print ('\nweekly newv4links', newv4links)
+print ('\nweekly newv6links', newv6links)
 
 '''
 Outputs:
