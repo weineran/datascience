@@ -28,7 +28,7 @@ def getdatadict(filename):
 		dd['ipversion'] = ipversion
 		dd['week'] = week
 		asdata.append(dd)
-		print dd
+		#print dd
 	print len(asdata)
 
 	return asdata
@@ -62,15 +62,15 @@ def getASdegree(asdata):
 	#print set(datav4.keys())
 	#print set(datav6.keys())
 	for (k,v) in datav4.iteritems():
-		print '\nAS:', k, 'Links:',v
+		#print '\nAS:', k, 'Links:',v
 		links = list(v)
 		if k in datav6.keys():
 			#links.extend(list(datav6[k]))
 			dataIPv4v6.append(len(set(links)))
 			#print 'v6:', len(set(datav6[k])),set(datav6[k])
-			print 'IPV4V6','AS:', k,'Degree:',len(set(links))
+			#print 'IPV4V6','AS:', k,'Degree:',len(set(links))
 		else:
-			print 'IPV4', 'AS:' ,k,'Degree:',len(set(links))
+			#print 'IPV4', 'AS:' ,k,'Degree:',len(set(links))
 			dataIPv4only.append(len(set(links)))
 	return dataIPv4only, dataIPv4v6
 
