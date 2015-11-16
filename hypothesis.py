@@ -99,6 +99,8 @@ def getweeklynewASlinks(asdata):
 			datav6[week].add(str((as1,as2)))
 	newIPv4 = []
 	newIPv6 = []
+	newIPv4perc = []
+	newIPv6perc = []
 	for w in weeks:
 		if w == 1:
 			continue
@@ -107,6 +109,10 @@ def getweeklynewASlinks(asdata):
 				datav4[w] = []
 			newv4 = [x for x in datav4[w] if x not in datav4[w-1]]
 			newIPv4.append(len(newv4))
+			if len(datav4[w-1]) != 0:
+				newIPv4perc.append(float(len(newv4))/len(datav4[w-1])*100.0)
+			else:
+				newIPv4perc.append(0)
 		except:
 			pass
 		try:
@@ -114,23 +120,24 @@ def getweeklynewASlinks(asdata):
 				datav6[w] = []
 			newv6 = [x for x in datav6[w] if x not in datav6[w-1]]
 			newIPv6.append(len(newv6))
+			if len(datav6[w-1]) != 0:
+				newIPv6perc.append(float(len(newv6))/len(datav6[w-1])*100.0)
+			else:
+				newIPv6perc.append(0)
 		except:
 			pass
-	return newIPv4, newIPv6
+	return newIPv4, newIPv6, newIPv4perc, newIPv6perc
 
-
-one = [10013, 7326, 8457, 10669, 7733, 8670, 8723, 8989, 9365, 10447, 9287, 7565, 10071, 7506, 9995, 8853, 8589, 7500, 10089, 7351, 10365, 9547, 9077, 9159, 7627, 9978, 7267, 9424, 9929, 6933, 7106, 0, 0, 0, 0, 58058, 11397, 8525, 10600, 10716, 13284, 8891, 11253, 2841, 20655, 8490, 11201, 8296, 9466, 11513, 8598, 2828]
-
-two = [694, 535, 451, 423, 486, 332, 380, 548, 576, 556, 364, 401, 499, 432, 336, 396, 408, 317, 387, 443, 421, 474, 333, 1355, 792, 433, 629, 539, 433, 422, 504, 913, 482, 485, 1715, 1128, 474, 382, 596, 467, 535, 388, 440, 301, 2216, 621, 492, 433, 477, 938, 328, 43]
-
-print len(one), len(two)
-sys.exit(0)
 
 asdata = getdatadict(filename)
 #ASv4degree, ASv4v6degree = getASdegree(asdata)
 #print '\nASV4only degree', ASv4degree
 #print '\nASv4v6 degree', ASv4v6degree
 
-newv4links, newv6links = getweeklynewASlinks(asdata)
+newv4links, newv6links, newIPv4perc, newIPv6perc = getweeklynewASlinks(asdata)
 print '\nweekly newv4links', newv4links
 print '\nweekly newv6links', newv6links
+print '\nweekly newv4linksperc', newIPv4perc
+print '\nweekly newv6linksperc', newIPv6perc
+
+
